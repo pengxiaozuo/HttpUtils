@@ -1,6 +1,29 @@
 # HttpUtils
 Http封装，提供简介的配置和使用方式，有问题可以留言讨论
 
+## gradle配置
+
+在project的build.gradle文件中配置
+
+```gradle
+allprojects {
+    repositories {
+      	//..
+        maven {
+            url 'https://dl.bintray.com/pengxiaozuo/maven'
+        }
+    }
+}
+```
+
+在module的build.gradle文件中配置
+
+```gradle
+    implementation 'com.peng.httputils:httputils:0.1.0'
+```
+
+## 在项目中使用
+
 在Application中配置，除了baseUrl之外，其他都是可选配置
 
 ```kotlin
@@ -72,5 +95,13 @@ val service2 = HttpUtils.create(HttpsService::class.java, HttpsService.baseUrl)
                 }, {
                     it.printStackTrace()
                 })
+```
+
+取消权限
+
+```xml
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
 

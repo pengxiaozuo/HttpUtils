@@ -3,7 +3,6 @@ package com.peng.httputils.interceptor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
-import android.support.annotation.RequiresPermission
 import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -45,7 +44,7 @@ class NetworkCacheInterceptor(private val context: Context) : Interceptor {
         }
     }
 
-    @RequiresPermission("android.permission.ACCESS_NETWORK_STATE")
+    @SuppressLint("MissingPermission")
     fun isAvailable(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = cm.activeNetworkInfo

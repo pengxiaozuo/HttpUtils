@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion compile_sdk_version
@@ -19,13 +20,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:$suppor_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -38,4 +37,13 @@ dependencies {
 
     //okhttp
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
+}
+
+publish {
+    userOrg = 'pengxiaozuo'
+    groupId = 'com.peng.httputils'
+    artifactId = 'httputils'
+    publishVersion = '0.1.0'
+    desc = ''
+    website = 'https://github.com/pengxiaozuo/HttpUtils'
 }
