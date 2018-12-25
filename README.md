@@ -3,19 +3,6 @@ Http封装，提供简介的配置和使用方式，有问题可以留言讨论
 
 ## gradle配置
 
-在project的build.gradle文件中配置
-
-```gradle
-allprojects {
-    repositories {
-      	//..
-        maven {
-            url 'https://dl.bintray.com/pengxiaozuo/maven'
-        }
-    }
-}
-```
-
 在module的build.gradle文件中配置
 
 ```gradle
