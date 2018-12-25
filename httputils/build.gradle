@@ -8,15 +8,20 @@ android {
     defaultConfig {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 2
+        versionName "0.2.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,7 +48,7 @@ publish {
     userOrg = 'pengxiaozuo'
     groupId = 'com.peng.httputils'
     artifactId = 'httputils'
-    publishVersion = '0.1.0'
+    publishVersion = '0.2.0'
     desc = ''
     website = 'https://github.com/pengxiaozuo/HttpUtils'
 }

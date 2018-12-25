@@ -3,14 +3,16 @@ package com.peng.httputils
 import com.peng.httputils.https.HttpsConfig
 import com.peng.httputils.interceptor.HeadersInterceptor
 import com.peng.httputils.interceptor.HttpLoggingInterceptor
-import okhttp3.Cache
-import okhttp3.CookieJar
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import com.peng.httputils.interceptor.ResponseCacheInterceptor
+import okhttp3.*
 import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
+import java.net.Proxy
+import java.net.ProxySelector
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 object HttpUtils {
 
@@ -70,30 +72,38 @@ object HttpUtils {
         var readTimeout = 10000L
         var connectTimeout = 10000L
         var writeTimeout = 10000L
-        var debug = false
+        var printLog = false
         var cache: Cache? = null
         var retry = true
         var cookieJar: CookieJar? = null
         var headers: Map<String, String>? = null
+        var authenticator: Authenticator? = null
+        var proxyAuthenticator: Authenticator? = null
         var httpsConfig: HttpsConfig? = null
+        var proxy: Proxy? = null
+        var proxySelector: ProxySelector? = null
+        private val interceptors = ArrayList<Interceptor>()
+        private val networkInterceptors = ArrayList<Interceptor>()
+        private val converterFactories = ArrayList<Converter.Factory>()
+        private val callAdapterFactories = ArrayList<CallAdapter.Factory>()
 
         fun addInterceptor(interceptor: Interceptor): Builder {
-            okhttpBuilder.addInterceptor(interceptor)
+            interceptors.add(interceptor)
             return this
         }
 
         fun addNetworkInterceptor(interceptor: Interceptor): Builder {
-            okhttpBuilder.addNetworkInterceptor(interceptor)
+            networkInterceptors.add(interceptor)
             return this
         }
 
         fun addConverterFactory(factory: Converter.Factory): Builder {
-            retrofitBuilder.addConverterFactory(factory)
+            converterFactories.add(factory)
             return this
         }
 
         fun addCallAdapterFactory(factory: CallAdapter.Factory): Builder {
-            retrofitBuilder.addCallAdapterFactory(factory)
+            callAdapterFactories.add(factory)
             return this
         }
 
@@ -117,6 +127,31 @@ object HttpUtils {
                 if (it.hostnameVerifier != null) {
                     okhttpBuilder.hostnameVerifier(it.hostnameVerifier!!)
                 }
+                if (it.certificatePinner != null) {
+                    okhttpBuilder.certificatePinner(it.certificatePinner!!)
+                }
+            }
+
+            authenticator?.let {
+
+                okhttpBuilder.authenticator(it)
+            }
+            proxyAuthenticator?.let {
+                okhttpBuilder.proxyAuthenticator(it)
+            }
+
+            proxy?.let {
+                okhttpBuilder.proxy(it)
+            }
+
+            proxySelector?.let {
+                okhttpBuilder.proxySelector(it)
+            }
+
+            if (printLog) {
+                val loggingInterceptor = HttpLoggingInterceptor()
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.FULL)
+                okhttpBuilder.addInterceptor(loggingInterceptor)
             }
 
             headers?.let {
@@ -124,10 +159,22 @@ object HttpUtils {
                 okhttpBuilder.addInterceptor(headersInterceptor)
             }
 
-            if (debug) {
-                val loggingInterceptor = HttpLoggingInterceptor()
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.FULL)
-                okhttpBuilder.addInterceptor(loggingInterceptor)
+            interceptors.forEach {
+                okhttpBuilder.addInterceptor(it)
+            }
+
+
+            okhttpBuilder.addNetworkInterceptor(ResponseCacheInterceptor())
+            networkInterceptors.forEach {
+                okhttpBuilder.addNetworkInterceptor(it)
+            }
+
+            converterFactories.forEach {
+                retrofitBuilder.addConverterFactory(it)
+            }
+
+            callAdapterFactories.forEach {
+                retrofitBuilder.addCallAdapterFactory(it)
             }
 
             return retrofitBuilder.baseUrl(baseUrl)

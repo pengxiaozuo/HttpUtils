@@ -14,7 +14,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         HttpUtils.init(GithubService.baseUrl, HttpsService.baseUrl) {
-            debug = BuildConfig.DEBUG
+            printLog = BuildConfig.DEBUG
             cache = Cache(File(getExternalFilesDir(null), "http-cache"), 10 * 1024 * 1024)
             addInterceptor(NetworkCacheInterceptor(this@MyApplication))
             addCallAdapterFactory(RxJava2CallAdapterFactory.create())
