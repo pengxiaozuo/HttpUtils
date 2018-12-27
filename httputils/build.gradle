@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 3
-        versionName "0.2.1"
+        versionCode 4
+        versionName "0.2.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -48,7 +48,7 @@ publish {
     userOrg = 'pengxiaozuo'
     groupId = 'com.peng.httputils'
     artifactId = 'httputils'
-    publishVersion = '0.2.1'
+    publishVersion = '0.2.2'
     desc = ''
     website = 'https://github.com/pengxiaozuo/HttpUtils'
 }

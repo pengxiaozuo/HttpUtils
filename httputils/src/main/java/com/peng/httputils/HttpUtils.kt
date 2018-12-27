@@ -45,12 +45,8 @@ object HttpUtils {
      */
     fun <T> create(clazz: Class<T>, baseUrl: String = ""): T {
         require(retrofitMap.size > 0) { "not init" }
-        require(baseUrl.trim().isNotEmpty() && retrofitMap.size > 1) {
-            return@require if (baseUrl.isEmpty()) {
-                "init is a multiple retrofit client, must input baseUrl"
-            } else {
-                "baseUrl cannot be spaces and whitespace characters"
-            }
+        if (retrofitMap.size > 1) {
+            require(baseUrl.trim().isNotEmpty()) { "init is a multiple retrofit client, must input baseUrl" }
         }
 
         val retrofit = (if (baseUrl.trim().isEmpty()) {
