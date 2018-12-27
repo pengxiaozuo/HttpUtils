@@ -121,14 +121,14 @@ object HttpUtils {
 
             httpsConfig?.let {
                 if (it.sslSocketFactory != null && it.trustManager != null) {
-                    okhttpBuilder.sslSocketFactory(it.sslSocketFactory!!, it.trustManager!!)
+                    okhttpBuilder.sslSocketFactory(it.sslSocketFactory, it.trustManager)
                 }
 
                 if (it.hostnameVerifier != null) {
-                    okhttpBuilder.hostnameVerifier(it.hostnameVerifier!!)
+                    okhttpBuilder.hostnameVerifier(it.hostnameVerifier)
                 }
                 if (it.certificatePinner != null) {
-                    okhttpBuilder.certificatePinner(it.certificatePinner!!)
+                    okhttpBuilder.certificatePinner(it.certificatePinner)
                 }
 
                 if (it.connectionSpecs != null) {
