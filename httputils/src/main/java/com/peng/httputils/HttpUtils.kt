@@ -19,11 +19,15 @@ object HttpUtils {
     private val retrofitMap = HashMap<String, Retrofit>()
 
     /**
-     * 初始化配置,多个url用同一个配置，可多次调用添加不同的配置
+     * 初始化配置,多个url用同一个配置，可传入不同的baseUrl添加不同的配置
+     * 保存配置
      */
-    fun init(vararg baseUrls: String, block: Builder.() -> Unit) {
+    fun init(vararg baseUrls: String, block: Builder.() -> Unit = {}) {
+        require(baseUrls.isNotEmpty()) { "init must input baseUrl" }
+
         var retrofit: Retrofit? = null
         baseUrls.forEach {
+            require(it.trim().isNotEmpty()) { "baseUrl cannot be spaces and whitespace characters" }
             if (retrofit == null) {
                 Builder(it).run {
                     block()
@@ -39,17 +43,17 @@ object HttpUtils {
     /**
      * 使用已经初始化的的配置创建服务，如果初始化的baseUrl仅有一个可以不传，否则报错
      */
-    fun <T> create(clazz: Class<T>, baseUrl: String? = null): T {
-        if (retrofitMap.size == 0) {
-            throw IllegalArgumentException("not init")
+    fun <T> create(clazz: Class<T>, baseUrl: String = ""): T {
+        require(retrofitMap.size > 0) { "not init" }
+        require(baseUrl.trim().isNotEmpty() && retrofitMap.size > 1) {
+            return@require if (baseUrl.isEmpty()) {
+                "init is a multiple retrofit client, must input baseUrl"
+            } else {
+                "baseUrl cannot be spaces and whitespace characters"
+            }
         }
 
-        if (baseUrl.isNullOrEmpty() && retrofitMap.size > 1) {
-            throw IllegalArgumentException("init multiple client, must input baseUrl")
-        }
-
-
-        val retrofit = (if (baseUrl.isNullOrEmpty()) {
+        val retrofit = (if (baseUrl.trim().isEmpty()) {
             retrofitMap.values.elementAt(0)
         } else {
             retrofitMap[baseUrl]
@@ -59,9 +63,9 @@ object HttpUtils {
     }
 
     /**
-     * 用一个临时的配置创建服务
+     * 创建服务，不保存配置
      */
-    fun <T> create(baseUrl: String, clazz: Class<T>, block: Builder.() -> Unit): T {
+    fun <T> create(baseUrl: String, clazz: Class<T>, block: Builder.() -> Unit = {}): T {
         val retrofit = Builder(baseUrl).apply(block).build()
         return retrofit.create(clazz)
     }
@@ -130,6 +134,10 @@ object HttpUtils {
                 if (it.certificatePinner != null) {
                     okhttpBuilder.certificatePinner(it.certificatePinner!!)
                 }
+
+                if (it.connectionSpecs != null) {
+                    okhttpBuilder.connectionSpecs(it.connectionSpecs)
+                }
             }
 
             authenticator?.let {
@@ -148,12 +156,6 @@ object HttpUtils {
                 okhttpBuilder.proxySelector(it)
             }
 
-            if (printLog) {
-                val loggingInterceptor = HttpLoggingInterceptor()
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.FULL)
-                okhttpBuilder.addInterceptor(loggingInterceptor)
-            }
-
             headers?.let {
                 val headersInterceptor = HeadersInterceptor(it)
                 okhttpBuilder.addInterceptor(headersInterceptor)
@@ -163,6 +165,11 @@ object HttpUtils {
                 okhttpBuilder.addInterceptor(it)
             }
 
+            if (printLog) {
+                val loggingInterceptor = HttpLoggingInterceptor()
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.FULL)
+                okhttpBuilder.addInterceptor(loggingInterceptor)
+            }
 
             okhttpBuilder.addNetworkInterceptor(ResponseCacheInterceptor())
             networkInterceptors.forEach {

@@ -1,6 +1,7 @@
 package com.peng.httputils.https
 
 import okhttp3.CertificatePinner
+import okhttp3.ConnectionSpec
 import java.io.InputStream
 import java.security.KeyStore
 import java.security.cert.CertificateException
@@ -10,16 +11,18 @@ import javax.net.ssl.*
 
 class HttpsConfig(builder: Builder) {
 
-    var sslSocketFactory: SSLSocketFactory?
-    var hostnameVerifier: HostnameVerifier?
-    var trustManager: X509TrustManager?
-    var certificatePinner: CertificatePinner?
+    val sslSocketFactory: SSLSocketFactory?
+    val hostnameVerifier: HostnameVerifier?
+    val trustManager: X509TrustManager?
+    val certificatePinner: CertificatePinner?
+    val connectionSpecs: List<ConnectionSpec>?
 
     init {
         sslSocketFactory = builder.sslSocketFactory
         hostnameVerifier = builder.hostnameVerifier
         trustManager = builder.trustManager
         certificatePinner = builder.certificatePinner
+        connectionSpecs = builder.connectionSpecs
     }
 
 
@@ -93,6 +96,7 @@ class HttpsConfig(builder: Builder) {
         var trustManager: X509TrustManager? = null
         var hostnameVerifier: HostnameVerifier? = null
         var certificatePinner: CertificatePinner? = null
+        var connectionSpecs: List<ConnectionSpec>? = null
         var allAllow = false
         private var tms: Array<TrustManager>? = null
         private var kms: Array<KeyManager>? = null
@@ -119,6 +123,7 @@ class HttpsConfig(builder: Builder) {
          * 导入持有的服务端证书
          */
         fun serverCertificate(vararg certificates: InputStream, type: String = KeyStore.getDefaultType()): Builder {
+            require(certificates.isNotEmpty()) { "not found certificate" }
             try {
                 val certificateFactory = CertificateFactory.getInstance("X.509")
                 val keyStore = KeyStore.getInstance(type)
@@ -140,10 +145,6 @@ class HttpsConfig(builder: Builder) {
                 e.printStackTrace()
             }
             return this
-        }
-
-        fun hostnameVerifier(hostnameVerifier: HostnameVerifier) {
-            this.hostnameVerifier = hostnameVerifier
         }
 
         fun build(): HttpsConfig {
