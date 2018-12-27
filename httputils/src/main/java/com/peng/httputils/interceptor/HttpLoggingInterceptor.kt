@@ -4,11 +4,14 @@ import android.util.Log
 import okhttp3.*
 import okhttp3.internal.http.HttpHeaders
 import okio.Buffer
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
 import java.util.concurrent.TimeUnit
+
 
 /**
  * An OkHttp interceptor which logs request and response information. Can be applied as an
@@ -147,10 +150,10 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
             val buffer = Buffer()
             requestBody!!.writeTo(buffer)
 
-            var charset: Charset? = UTF8
+            var charset: Charset = UTF8
             val contentType = requestBody.contentType()
             if (contentType != null) {
-                charset = contentType.charset(UTF8)
+                charset = contentType.charset(UTF8)!!
             }
 
             logMsg.add("")
@@ -235,7 +238,24 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
 
             if (contentLength != 0L) {
                 logger.log("")
-                logger.log(buffer.clone().readString(charset!!))
+                var content = buffer.clone().readString(charset!!).trim()
+                try {
+                    if (content.startsWith("{")) {
+                        val jsonObject = JSONObject(content)
+                        content = jsonObject.toString(2)
+
+                    }
+                    if (content.startsWith("[")) {
+                        val jsonArray = JSONArray(content)
+                        content = jsonArray.toString(2)
+                    }
+                } catch (e: Exception) {
+
+                }
+                val lines = content.split(System.getProperty("line.separator"))
+                lines.forEach {
+                    logger.log(it)
+                }
             }
 
             logger.log("<-- END HTTP (" + buffer.size() + "-byte body)")
