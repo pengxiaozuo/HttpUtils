@@ -9,7 +9,7 @@ class HeadersInterceptor(private val map: Map<String, String>) : Interceptor {
         val originHeaders = chain.request().headers()
         val requestBuilder = chain.request().newBuilder()
         for ((k, v) in map) {
-            if (originHeaders[k] != null) {
+            if (originHeaders[k] == null) {
                 requestBuilder.header(k, v)
             }
         }
