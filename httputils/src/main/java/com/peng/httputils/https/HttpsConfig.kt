@@ -48,6 +48,7 @@ class HttpsConfig(builder: Builder) {
 
 
     companion object {
+        @JvmStatic
         inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
     }
 
@@ -103,6 +104,7 @@ class HttpsConfig(builder: Builder) {
         /**
          * 导入客户端自己的证书
          */
+        @JvmOverloads
         fun clientCertificate(input: InputStream, password: String? = null,
                               type: String = "BKS"): Builder {
             try {
@@ -122,6 +124,7 @@ class HttpsConfig(builder: Builder) {
         /**
          * 导入持有的服务端证书
          */
+        @JvmOverloads
         fun serverCertificate(vararg certificates: InputStream, type: String = KeyStore.getDefaultType()): Builder {
             require(certificates.isNotEmpty()) { "not found certificate" }
             try {

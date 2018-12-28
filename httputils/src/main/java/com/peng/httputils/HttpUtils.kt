@@ -22,6 +22,8 @@ object HttpUtils {
      * 初始化配置,多个url用同一个配置，可传入不同的baseUrl添加不同的配置
      * 保存配置
      */
+    @JvmStatic
+    @JvmOverloads
     fun init(vararg baseUrls: String, block: Builder.() -> Unit = {}) {
         require(baseUrls.isNotEmpty()) { "init must input baseUrl" }
 
@@ -43,6 +45,8 @@ object HttpUtils {
     /**
      * 使用已经初始化的的配置创建服务，如果初始化的baseUrl仅有一个可以不传，否则报错
      */
+    @JvmStatic
+    @JvmOverloads
     fun <T> create(clazz: Class<T>, baseUrl: String = ""): T {
         require(retrofitMap.size > 0) { "not init" }
         if (retrofitMap.size > 1) {
@@ -61,6 +65,8 @@ object HttpUtils {
     /**
      * 创建服务，不保存配置
      */
+    @JvmStatic
+    @JvmOverloads
     fun <T> create(baseUrl: String, clazz: Class<T>, block: Builder.() -> Unit = {}): T {
         val retrofit = Builder(baseUrl).apply(block).build()
         return retrofit.create(clazz)
