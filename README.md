@@ -6,7 +6,7 @@ Http封装，提供简介的配置和使用方式，有问题可以留言讨论
 在module的build.gradle文件中配置
 
 ```gradle
-implementation 'com.peng.httputils:httputils:0.2.4'
+implementation 'com.peng.httputils:httputils:0.3.1'
 ```
 
 ## 在项目中使用

@@ -14,8 +14,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-inline fun <reified T> HttpUtils.create(baseUrl: String = ""): T = create(T::class.java, baseUrl)
-inline fun <reified T> HttpUtils.create(baseUrl: String, noinline block: HttpUtils.Builder.() -> Unit = {}): T = create(baseUrl, T::class.java, block)
 
 object HttpUtils {
 
@@ -44,6 +42,9 @@ object HttpUtils {
             }
         }
     }
+
+    inline fun <reified T> create(baseUrl: String = ""): T = create(T::class.java, baseUrl)
+    inline fun <reified T> create(baseUrl: String, noinline block: Builder.() -> Unit = {}): T = create(baseUrl, T::class.java, block)
 
 
     /**
