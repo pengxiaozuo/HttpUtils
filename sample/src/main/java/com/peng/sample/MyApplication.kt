@@ -18,7 +18,9 @@ class MyApplication : Application() {
 
         //最简单的初始化，使用默认配置
         //初始化配置
-        HttpUtils.init(GithubService.baseUrl)
+        HttpUtils.init(GithubService.baseUrl){
+            addConverterFactory(GsonConverterFactory.create())
+        }
 
 
         //详细指定需要的配置

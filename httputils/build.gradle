@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 6
-        versionName "0.2.4"
+        versionCode 7
+        versionName "0.3.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +29,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -48,7 +48,7 @@ publish {
     userOrg = 'pengxiaozuo'
     groupId = 'com.peng.httputils'
     artifactId = 'httputils'
-    publishVersion = '0.2.4'
+    publishVersion = '0.3.0'
     desc = ''
     website = 'https://github.com/pengxiaozuo/HttpUtils'
 }

@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.peng.httputils.HttpUtils
+import com.peng.httputils.create
 import com.peng.httputils.https.HttpsConfig
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.await
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,5 +54,14 @@ class MainActivity : AppCompatActivity() {
                     it.printStackTrace()
                     Log.e("httpsServiceTemp", "httpsServiceTemp request error", it)
                 })
+
+        GlobalScope.launch {
+
+            val user = HttpUtils.create<GithubService>(GithubService.baseUrl)
+                    .getSuspendUser("pengxiaozuo")
+
+            Log.d("getSuspendUser", user.toString())
+        }
     }
+
 }

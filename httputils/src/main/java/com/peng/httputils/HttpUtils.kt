@@ -14,6 +14,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+inline fun <reified T> HttpUtils.create(baseUrl: String = ""): T = create(T::class.java, baseUrl)
+inline fun <reified T> HttpUtils.create(baseUrl: String, noinline block: HttpUtils.Builder.() -> Unit = {}): T = create(baseUrl, T::class.java, block)
+
 object HttpUtils {
 
     private val retrofitMap = HashMap<String, Retrofit>()
@@ -41,6 +44,7 @@ object HttpUtils {
             }
         }
     }
+
 
     /**
      * 使用已经初始化的的配置创建服务，如果初始化的baseUrl仅有一个可以不传，否则报错
