@@ -9,6 +9,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,12 +18,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Thread {
-            //使用已经初始化好的Retrofit创建服务
-            val githubService = HttpUtils.create(GithubService::class.java, GithubService.baseUrl)
-            //使用创建好的服务获取结果
-            val response = githubService.getUser("pengxiaozuo").execute()
-            val msg = response.body()?.string()
-            Log.d("githubService", msg)
+            try {
+                //使用已经初始化好的Retrofit创建服务
+                val githubService = HttpUtils.create(GithubService::class.java)
+                //使用创建好的服务获取结果
+                val response = githubService.getUser("pengxiaozuo").execute()
+                val msg = response.body()?.string()
+                Log.d("githubService", msg)
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
         }.start()
 
         //使用已经初始化好的Retrofit创建服务,如果初始化过多个baseUrl需要指定具体的baseUrl
@@ -55,10 +60,15 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch {
 
-            val user = HttpUtils.create<GithubService>(GithubService.baseUrl)
-                    .getSuspendUser("pengxiaozuo")
+            try {
 
-            Log.d("getSuspendUser", user.toString())
+                val user = HttpUtils.create<GithubService>()
+                        .getSuspendUser("pengxiaozuo")
+
+                Log.d("getSuspendUser", user.toString())
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 
 object HttpUtils {
 
-    private val retrofitMap = HashMap<String, Retrofit>()
+    private val retrofitMap = LinkedHashMap<String, Retrofit>()
 
     /**
      * 初始化配置,多个url用同一个配置，可传入不同的baseUrl添加不同的配置
@@ -54,9 +54,9 @@ object HttpUtils {
     @JvmOverloads
     fun <T> create(clazz: Class<T>, baseUrl: String = ""): T {
         require(retrofitMap.size > 0) { "not init" }
-        if (retrofitMap.size > 1) {
-            require(baseUrl.trim().isNotEmpty()) { "init is a multiple retrofit client, must input baseUrl" }
-        }
+//        if (retrofitMap.size > 1) {
+//            require(baseUrl.trim().isNotEmpty()) { "init is a multiple retrofit client, must input baseUrl" }
+//        }
 
         val retrofit = (if (baseUrl.trim().isEmpty()) {
             retrofitMap.values.elementAt(0)
